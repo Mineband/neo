@@ -194,22 +194,8 @@ function updateDPSMeter(data) {
     
     playerDiv.classList.add('player')
 
-    const hasCustomGradient = 
-      combatant.name === 'Shaddy' || 
-      combatant.name === 'lll' || 
-      combatant.name === 'hiya' || 
-      combatant.name === 'K Z' || 
-      combatant.name === 'Tamed' || 
-      combatant.name === 'Panacea' || 
-      combatant.name === 'NellanFM' ||
-      combatant.name === 'Eve' ||
-      combatant.name === 'Whoah' ||
-      combatant.name === 'renless' ||
-      combatant.name === 'Geaven' ||
-      combatant.name === 'Coca Cola' ||
-      combatant.name === 'neen';
 
-    if ((combatant.name === 'You' || combatant.isSelf === 'true') && !hasCustomGradient) {
+    if ((combatant.name === 'You' || combatant.isSelf === 'true')) {
       playerDiv.classList.add('you')
     }
 
@@ -218,55 +204,6 @@ function updateDPSMeter(data) {
 
     let gradientBg = document.createElement('div')
     gradientBg.className = 'gradient-bg'
-    
-    if (combatant.name === 'Shaddy') {
-      gradientBg.classList.add('rgb-gradient')
-    }
-
-    if (combatant.name === 'lll' || combatant.name === 'hiya') {
-      gradientBg.classList.add('black-gradient')
-    }
-
-    if (combatant.name === 'K Z') {
-      gradientBg.classList.add('white-gradient')
-    }
-
-    if (combatant.name === 'Tamed') {
-      gradientBg.classList.add('pink-gradient')
-    }
-
-    if (combatant.name === 'Panacea') {
-      gradientBg.classList.add('panacea-gradient')
-    }
-
-    if (combatant.name === 'NellanFM') {
-      gradientBg.classList.add('pepe-gradient')
-    }
-
-    if (combatant.name === 'Eve') {
-      gradientBg.classList.add('eve-gradient')
-    }
-
-    if (combatant.name === 'Whoah') {
-      gradientBg.classList.add('whoah-gradient')
-    }
-
-    if (combatant.name === 'renless') {
-      gradientBg.classList.add('renless-gradient')
-    }
-
-    if (combatant.name === 'Geaven') {
-      gradientBg.style.background = '#2980B9';
-    }
-
-    if (combatant.name === 'Coca Cola') {
-      gradientBg.classList.add('coca-cola-gradient');
-    }
-
-    if (combatant.name === 'neen') {
-      gradientBg.style.background = '#FF2134';
-    }
-
     gradientBg.style.clipPath = `inset(0 ${100 - widthPercentage}% 0 0)`
     
     let barContent = document.createElement('div')
@@ -274,25 +211,7 @@ function updateDPSMeter(data) {
 
     const name = document.createElement('span')
     name.className = 'dps-bar-label'
-    
-    if (combatant.name === 'renless') {
-      name.innerHTML = combatant.name + ' <img src="./renless.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'Eve') {
-      name.innerHTML = combatant.name + ' <img src="./eve.svg" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'NellanFM') {
-      name.innerHTML = combatant.name + ' <img src="./nellan.webp" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'Feomatharia') {
-      name.innerHTML = combatant.name + ' <img src="./wizard.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'Geaven') {
-      name.innerHTML = combatant.name + ' <img src="./geaven.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'Coca Cola') {
-      name.innerHTML = '<img src="./cola.png" style="height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'neen') {
-      name.innerHTML = combatant.name + ' <img src="./neen.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else {
-      name.textContent = combatant.name
-    }
-
+    name.textContent = combatant.name
     const dps = document.createElement('span')
     dps.className = 'dps-bar-value'
     dps.textContent = `${nf.format(combatant.dpsValue)}/sec`
