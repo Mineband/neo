@@ -29,18 +29,16 @@ document.addEventListener('DOMContentLoaded', function () {
       animation: gradientFlow 6s ease infinite;
       opacity: 0.9;
     }
-  .ryiki-gradient {
-    background: #ff0000;
-    background: linear-gradient(
-      32deg,
-      rgba(255, 0, 0, 1) 0%,
-      rgba(255, 102, 102, 1) 50%,
-      rgba(255, 255, 255, 1) 100% 
-    ) !important;
-    background-size: 200% 200% !important;
-    animation: gradientFlow 6s ease infinite;
-    opacity: 0.9;
-  }
+    .ryiki-gradient {
+      background: #ff0000;
+      background: linear-gradient(
+        32deg,
+        rgba(255, 0, 0, 1) 0%,
+        rgba(255, 102, 102, 1) 50%,
+        rgba(255, 255, 255, 1) 100%
+      ) !important;
+      opacity: 0.9;
+    }
     @keyframes gradientFlow {
       0% { background-position: 0% 50%; }
       25% { background-position: 100% 0%; }
