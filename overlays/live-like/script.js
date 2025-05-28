@@ -23,37 +23,14 @@ document.addEventListener('DOMContentLoaded', function () {
     document.documentElement.setAttribute('lang', 'kr');
   }
 
-  const style = document.createElement('style');
-  style.textContent = `
-    .rgb-gradient {
-      background: linear-gradient(-45deg, #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff) !important;
-      background-size: 200% 200% !important;
-      animation: gradientFlow 6s ease infinite;
-      opacity: 0.9;
-    }
-
-    .ryiki-gradient {
-      background: linear-gradient(
-        32deg,
-        rgba(255, 0, 0, 1) 0%,
-        rgba(255, 102, 102, 1) 50%,
-        rgba(255, 255, 255, 1) 100%
-      ) !important;
-      opacity: 0.9;
-    }
-
-    @keyframes gradientFlow {
-      0% { background-position: 0% 50%; }
-      25% { background-position: 100% 0%; }
-      50% { background-position: 100% 100%; }
-      75% { background-position: 0% 100%; }
-      100% { background-position: 0% 50%; }
-    }
-  `;
-  document.head.appendChild(style);
-
-  layer.connect();
-  layer.on('data', updateDPSMeter);
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'customGradients.css';
+  link.onload = () => {
+    layer.connect();
+    layer.on('data', updateDPSMeter);
+  };
+  document.head.appendChild(link);
 
   setupZoomControls();
 });
@@ -88,6 +65,18 @@ function parseAnyNumberFormat(value) {
   return Number(stringValue);
 }
 
+function styleClassExists(className) {
+  return [...document.styleSheets].some(sheet => {
+    try {
+      return [...sheet.cssRules].some(rule =>
+        rule.selectorText === `.${className}`
+      );
+    } catch (e) {
+      return false;
+    }
+  });
+}
+
 function updateDPSMeter(data) {
   document.getElementById('boss-name').innerText = data.Encounter.title || 'No Data';
   let table = document.getElementById('combatantTable');
@@ -118,10 +107,27 @@ function updateDPSMeter(data) {
     let gradientBg = document.createElement('div');
     gradientBg.className = 'gradient-bg';
 
-    if (combatant.name === 'You' && window.overrideStyle === 'Ryiki') {
-      gradientBg.classList.add('ryiki-gradient');
-    } else if (combatant.name === 'Ryiki') {
-      gradientBg.classList.add('ryiki-gradient');
+
+    const hasCustomGradients = style =>
+      style?.toLowerCase() === 'ryiki' ||
+      style?.toLowerCase() === 'cayreah';
+
+    const override = window.overrideStyle ? window.overrideStyle.toLowerCase() : null;
+    const overrideClass = override ? `${override}-gradient` : null;
+    const isSelf = combatant.name === 'You';
+
+    if (isSelf && override && hasCustomGradients(override)) {
+      gradientBg.classList.add(overrideClass);
+    } else if (isSelf) {
+      playerDiv.classList.add('you');
+    }
+
+    if (
+      !isSelf &&
+      hasCustomGradients(combatant.name) &&
+      combatant.name.toLowerCase() === override
+    ) {
+      gradientBg.classList.add(overrideClass);
     }
 
     gradientBg.style.clipPath = `inset(0 ${100 - widthPercentage}% 0 0)`;
@@ -131,7 +137,15 @@ function updateDPSMeter(data) {
 
     const name = document.createElement('span');
     name.className = 'dps-bar-label';
-    name.textContent = combatant.name;
+
+    if (
+      combatant.name === 'Ryiki' || 
+      (isSelf && override === 'ryiki')
+    ) {
+      name.innerHTML = `${combatant.name} <img src="icons/Nerik_logo.png" class="player-icon" />`;
+    } else {
+      name.textContent = combatant.name;
+    }
 
     const dps = document.createElement('span');
     dps.className = 'dps-bar-value';
