@@ -29,13 +29,18 @@ document.addEventListener('DOMContentLoaded', function () {
       animation: gradientFlow 6s ease infinite;
       opacity: 0.9;
     }
-    .ryiki-gradient {
-      background: #000000;
-      background: linear-gradient(32deg, rgba(0, 0, 0, 1) 0%, rgba(30, 92, 57, 1) 50%, rgba(169, 222, 55, 1) 100%) !important;
-      background-size: 200% 200% !important;
-      animation: gradientFlow 6s ease infinite;
-      opacity: 0.9;
-    }
+  .ryiki-gradient {
+    background: #ff0000;
+    background: linear-gradient(
+      32deg,
+      rgba(255, 0, 0, 1) 0%,
+      rgba(255, 102, 102, 1) 50%,
+      rgba(255, 255, 255, 1) 100% 
+    ) !important;
+    background-size: 200% 200% !important;
+    animation: gradientFlow 6s ease infinite;
+    opacity: 0.9;
+  }
     @keyframes gradientFlow {
       0% { background-position: 0% 50%; }
       25% { background-position: 100% 0%; }
@@ -170,7 +175,7 @@ function updateDPSMeter(data) {
     name.className = 'dps-bar-label'
     
     if (combatant.name === 'You') {
-      name.innerHTML = combatant.name + ' <img src="./Nerik_logo.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
+      name.innerHTML = combatant.name + ' <img src="./Nerik_logo.png" style="width: 1.5rem; height: 1.5rem; vertical-align: middle;" />'
     }
     else {
       name.textContent = combatant.name
