@@ -201,9 +201,9 @@ function updateDPSMeter(data) {
       combatant.name === 'Tamed' || 
       combatant.name === 'Panacea' || 
       combatant.name === 'NellanFM' ||
-      combatant.name === 'Eve' ||
+      combatant.name === 'Cayreah' ||
       combatant.name === 'Whoah' ||
-      combatant.name === 'renless' ||
+      combatant.name === 'Ryiki' ||
       combatant.name === 'Geaven' ||
       combatant.name === 'Coca Cola' ||
       combatant.name === 'neen';
