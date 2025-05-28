@@ -160,7 +160,7 @@ function updateDPSMeter(data) {
     let gradientBg = document.createElement('div')
     gradientBg.className = 'gradient-bg'
     
-    if (combatant.name === 'You') {
+    if (combatant.name === 'Ryiki') {
       gradientBg.classList.add('ryiki-gradient')
     }
 
@@ -172,7 +172,7 @@ function updateDPSMeter(data) {
     const name = document.createElement('span')
     name.className = 'dps-bar-label'
     
-    if (combatant.name === 'You') {
+    if (combatant.name === 'Ryiki') {
       name.innerHTML = combatant.name + ' <img src="./Nerik_logo.png" style="width: 1.5rem; height: 1.5rem; vertical-align: middle;" />'
     }
     else {
