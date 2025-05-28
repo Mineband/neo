@@ -1,5 +1,4 @@
 const nf = new Intl.NumberFormat('en-US')
-let realPlayerName = null;
 
 layer.on('status', function (e) {
   if (e.type === 'lock') {
@@ -17,12 +16,13 @@ function hideResizeHandle() {
 
 document.addEventListener('DOMContentLoaded', function () {
   const q = new URLSearchParams(this.location.search);
+
   if (q.get('font') === 'kr') {
     document.documentElement.setAttribute('lang', 'kr')
   }
 
   const style = document.createElement('style');
-  style.textContent = `
+  style.textContent = 
     .rgb-gradient {
       background: linear-gradient(-45deg, #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff) !important;
       background-size: 200% 200% !important;
@@ -46,76 +46,69 @@ document.addEventListener('DOMContentLoaded', function () {
       75% { background-position: 0% 100%; }
       100% { background-position: 0% 50%; }
     }
-  `;
+  ;
   document.head.appendChild(style);
+
   layer.connect();
   layer.on('data', updateDPSMeter);
+
   setupZoomControls();
 })
 
 let popperInstance = null
 
 function parseAnyNumberFormat(value) {
-  if (value === undefined || value === null || value === '') return 0;
-  if (typeof value === 'number') return value;
-  if (value === '∞') return 0;
+  if (value === undefined || value === null || value === '') {
+    return 0;
+  }
+  
+  if (typeof value === 'number') {
+    return value;
+  }
+  
+  if (value === '∞') {
+    return 0;
+  }
+  
   const stringValue = String(value);
+  
   if (stringValue.includes('.') && stringValue.includes(',')) {
     if (stringValue.lastIndexOf('.') < stringValue.lastIndexOf(',')) {
       return Number(stringValue.replace(/\./g, '').replace(',', '.'));
-    } else {
+    } 
+    else {
       return Number(stringValue.replace(/,/g, ''));
     }
   }
+  
   if (stringValue.includes('.') && !stringValue.includes(',')) {
     if ((stringValue.match(/\./g) || []).length > 1) {
       return Number(stringValue.replace(/\./g, ''));
     }
     return Number(stringValue);
   }
+  
   if (stringValue.includes(',') && !stringValue.includes('.')) {
     if ((stringValue.match(/,/g) || []).length > 1) {
       return Number(stringValue.replace(/,/g, ''));
     }
     return Number(stringValue.replace(',', '.'));
   }
+  
   return Number(stringValue);
 }
 
 function updateDPSMeter(data) {
-  let combatants = Object.values(data.Combatant);
-  console.log('Combatants:', combatants.map(c => c.name));
+  document.getElementById('boss-name').innerText = data.Encounter.title || 'No Data'
 
-  document.getElementById('boss-name').innerText = data.Encounter.title || 'No Data';
-  let table = document.getElementById('combatantTable');
-  table.innerHTML = '';
+  let table = document.getElementById('combatantTable')
+  table.innerHTML = ''
 
-  if (!realPlayerName) {
-    const youEntry = combatants.find(c => c.name === 'You' || c.isSelf === 'true');
-    console.log('[Overlay] You entry:', youEntry);
-
-    if (youEntry) {
-      const yourDPS = parseAnyNumberFormat(youEntry.DPS || youEntry.encdps || 0);
-      for (let c of combatants) {
-        if (c.name !== 'You' && c.name !== 'Limit Break') {
-          const theirDPS = parseAnyNumberFormat(c.DPS || c.encdps || 0);
-          if (Math.abs(theirDPS - yourDPS) < 0.01) {
-            realPlayerName = c.name;
-            console.log('[Overlay] Saját név felismerve:', realPlayerName);
-            break;
-          }
-        }
-      }
-    }
-  }
-
-
+  let combatants = Object.values(data.Combatant)
+  
   combatants.forEach(combatant => {
-    if (combatant.name === 'You' && realPlayerName) {
-      combatant.name = realPlayerName;
-      combatant.isSelf = 'true';
-    }
     combatant.damageValue = parseAnyNumberFormat(combatant.damage);
+    
     if (combatant.DPS !== undefined) {
       combatant.dpsValue = parseAnyNumberFormat(combatant.DPS);
     } else if (combatant.encdps !== undefined) {
@@ -123,6 +116,7 @@ function updateDPSMeter(data) {
     } else {
       combatant.dpsValue = 0;
     }
+    
     if (combatant['damage%'] !== undefined) {
       const damagePercentStr = String(combatant['damage%']).replace('%', '');
       combatant.damagePercent = parseAnyNumberFormat(damagePercentStr);
@@ -130,26 +124,33 @@ function updateDPSMeter(data) {
       combatant.damagePercent = 0;
     }
   })
-
+  
   combatants.sort((a, b) => b.damageValue - a.damageValue)
 
-  const maxDamage = combatants.length > 0
-    ? Math.max(...combatants.map(c => c.damageValue || 0))
+  const maxDamage = combatants.length > 0 
+    ? Math.max(...combatants.map(c => c.damageValue || 0)) 
     : 0
 
   combatants.forEach((combatant) => {
     const currentDamage = combatant.damageValue || 0
-    const widthPercentage = maxDamage > 0
-      ? (currentDamage / maxDamage) * 100
+    const widthPercentage = maxDamage > 0 
+      ? (currentDamage / maxDamage) * 100 
       : 0
 
     let playerDiv = document.createElement('div')
+    
     playerDiv.setAttribute('data-player', combatant.name)
+    // playerDiv.addEventListener('mouseenter', (event) => showSkills(combatant, event))
+    // playerDiv.addEventListener('mouseleave', hideSkills)
+    
     playerDiv.classList.add('player')
 
-    const hasCustomGradient = combatant.name === 'Ryiki';
+    const hasCustomGradient = 
+      //combatant.name === 'Cayreah' ||
+      combatant.name === 'Ryiki';
 
-    if (combatant.isSelf === 'true' && !hasCustomGradient) {
+
+    if ((combatant.name === 'You' || combatant.isSelf === 'true') && !hasCustomGradient) {
       playerDiv.classList.add('you')
     }
 
@@ -158,28 +159,29 @@ function updateDPSMeter(data) {
 
     let gradientBg = document.createElement('div')
     gradientBg.className = 'gradient-bg'
-
+    
     if (combatant.name === 'Ryiki') {
       gradientBg.classList.add('ryiki-gradient')
     }
 
-    gradientBg.style.clipPath = `inset(0 ${100 - widthPercentage}% 0 0)`
-
+    gradientBg.style.clipPath = inset(0 ${100 - widthPercentage}% 0 0)
+    
     let barContent = document.createElement('div')
     barContent.className = 'bar-content'
 
     const name = document.createElement('span')
     name.className = 'dps-bar-label'
-
+    
     if (combatant.name === 'Ryiki') {
       name.innerHTML = combatant.name + ' <img src="./Nerik_logo.png" style="width: 1.5rem; height: 1.5rem; vertical-align: middle;" />'
-    } else {
+    }
+    else {
       name.textContent = combatant.name
     }
 
     const dps = document.createElement('span')
     dps.className = 'dps-bar-value'
-    dps.textContent = `${nf.format(combatant.dpsValue)}/sec`
+    dps.textContent = ${nf.format(combatant.dpsValue)}/sec
 
     barContent.appendChild(name)
     barContent.appendChild(dps)
@@ -203,7 +205,7 @@ function showSkills(combatant, event) {
     }),
   }
 
-  let skillHTML = `
+  let skillHTML = 
       <div class="skill-summary">Total Damage: ${combatant['damage-*']} (${combatant['damage%']})</div>
       <div class="skill-summary">Hits: ${combatant['hits']}</div>
       <div class="skill-summary">Total Crit %: ${combatant['crithit%']}</div>
@@ -213,9 +215,9 @@ function showSkills(combatant, event) {
           <span>Hits</span>
           <span>Crit %</span>
           <span>Damage</span>
-      </div>`
-
-  skillHTML += `<div class="skill">No skill data available</div>`
+      </div>
+      
+  skillHTML += <div class="skill">No skill data available</div>
   skillDetails.innerHTML = skillHTML
   skillDetails.style.display = 'block'
 
@@ -261,10 +263,12 @@ function setupZoomControls() {
   const zoomOutBtn = document.getElementById('zoom-out');
   const zoomInBtn = document.getElementById('zoom-in');
   const root = document.documentElement;
-  let currentZoom = 100;
+
+  let currentZoom = 100; 
   const minZoom = 50;
   const maxZoom = 200;
   const zoomStep = 10;
+
   const savedZoom = localStorage.getItem('dpsMeterZoom');
   if (savedZoom) {
     currentZoom = parseInt(savedZoom);
@@ -272,7 +276,8 @@ function setupZoomControls() {
   }
 
   function applyZoom() {
-    root.style.fontSize = `${currentZoom / 100}rem`;
+    root.style.fontSize = ${currentZoom / 100}rem;
+    
     localStorage.setItem('dpsMeterZoom', currentZoom);
   }
 
