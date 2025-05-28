@@ -1,5 +1,17 @@
 const nf = new Intl.NumberFormat('en-US');
 
+const customStyles = {
+  ryiki: {
+    style: 'ryiki-gradient',
+    icon: 'icons/Nerik_logo.png'
+  },
+  cayreah: {
+    style: 'cayreah-gradient',
+    icon: 'icons/Cayreah_logo.png'
+  }
+  // ide bővítheted tovább
+};
+
 layer.on('status', function (e) {
   if (e.type === 'lock') {
     e.message ? hideResizeHandle() : displayResizeHandle();
@@ -93,6 +105,8 @@ function updateDPSMeter(data) {
   combatants.sort((a, b) => b.damageValue - a.damageValue);
   const maxDamage = Math.max(...combatants.map(c => c.damageValue || 0));
 
+  const override = window.overrideStyle ? window.overrideStyle.toLowerCase() : null;
+
   combatants.forEach(combatant => {
     const currentDamage = combatant.damageValue || 0;
     const widthPercentage = maxDamage > 0 ? (currentDamage / maxDamage) * 100 : 0;
@@ -107,27 +121,14 @@ function updateDPSMeter(data) {
     let gradientBg = document.createElement('div');
     gradientBg.className = 'gradient-bg';
 
-
-    const hasCustomGradients = style =>
-      style?.toLowerCase() === 'ryiki' ||
-      style?.toLowerCase() === 'cayreah';
-
-    const override = window.overrideStyle ? window.overrideStyle.toLowerCase() : null;
-    const overrideClass = override ? `${override}-gradient` : null;
     const isSelf = combatant.name === 'You';
+    const combatantKey = isSelf ? override : combatant.name.toLowerCase();
+    const config = customStyles[combatantKey];
 
-    if (isSelf && override && hasCustomGradients(override)) {
-      gradientBg.classList.add(overrideClass);
+    if (config?.style) {
+      gradientBg.classList.add(config.style);
     } else if (isSelf) {
       playerDiv.classList.add('you');
-    }
-
-    if (
-      !isSelf &&
-      hasCustomGradients(combatant.name) &&
-      combatant.name.toLowerCase() === override
-    ) {
-      gradientBg.classList.add(overrideClass);
     }
 
     gradientBg.style.clipPath = `inset(0 ${100 - widthPercentage}% 0 0)`;
@@ -138,11 +139,8 @@ function updateDPSMeter(data) {
     const name = document.createElement('span');
     name.className = 'dps-bar-label';
 
-    if (
-      combatant.name === 'Ryiki' || 
-      (isSelf && override === 'ryiki')
-    ) {
-      name.innerHTML = `${combatant.name} <img src="icons/Nerik_logo.png" class="player-icon" />`;
+    if (config?.icon) {
+      name.innerHTML = `<img src="${config.icon}" class="player-icon" /> ${combatant.name}`;
     } else {
       name.textContent = combatant.name;
     }
