@@ -29,58 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
       animation: gradientFlow 6s ease infinite;
       opacity: 0.9;
     }
-    .black-gradient {
-      background: linear-gradient(to right, #000000 0%, #000000 15%, #0A0A0A 20%, #151515 30%, #252525 40%, #353535 50%, #454545 60%, #555555 70%, #454545 80%, #353535 90%, #252525 100%) !important;
-      background-size: 200% 200% !important;
-      animation: gradientFlow 6s ease infinite;
-      opacity: 0.9;
-    }
-    .coca-cola-gradient {
-      background: url('./cola-bg.jpg') !important;
-      background-size: cover !important;
-      background-position: center !important;
-      opacity: 0.9;
-    }
-    .pink-gradient {
-      background: linear-gradient(-45deg, #ff69b4, #ff1493, #ff007f, #db7093, #ffc0cb) !important;
-      background-size: 200% 200% !important;
-      animation: gradientFlow 6s ease infinite;
-      opacity: 0.9;
-    }
-    .white-gradient {
-      background: linear-gradient(-45deg, #ffffff, #f8f8f8, #f0f0f0, #e0e0e0, #c0c0c0) !important;
-      background-size: 200% 200% !important;
-      animation: gradientFlow 6s ease infinite;
-      opacity: 0.9;
-    }
-    .panacea-gradient {
-      background: #020024;
-      background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(47, 47, 196, 1) 66%, rgba(0, 212, 255, 1) 91%) !important;
-      background-size: 200% 200% !important;
-      animation: gradientFlow 6s ease infinite;
-      opacity: 0.9;
-    }
-    .pepe-gradient {
-      background: linear-gradient(-45deg, #8B4513, #A0522D, #8B4513, #654321, #5D4037) !important;
-      background-size: 200% 200% !important;
-      animation: gradientFlow 6s ease infinite;
-      opacity: 0.9;
-    }
-    .eve-gradient {
-      background: #2a0866fc;
-      background: linear-gradient(194deg, rgba(42, 8, 102, 1) 0%, rgba(12, 79, 130, 1) 52%, rgba(31, 2, 2, 1) 98%) !important;
-      background-size: 200% 200% !important;
-      animation: gradientFlow 6s ease infinite;
-      opacity: 0.9;
-    }
-    .whoah-gradient {
-      background: #841617;
-      background: radial-gradient(circle, rgba(132, 22, 23, 1) 0%, rgba(253, 29, 29, 1) 50%, rgba(48, 0, 0, 1) 100%) !important;
-      background-size: 200% 200% !important;
-      animation: gradientFlow 6s ease infinite;
-      opacity: 0.9;
-    }
-    .renless-gradient {
+    .ryiki-gradient {
       background: #000000;
       background: linear-gradient(32deg, rgba(0, 0, 0, 1) 0%, rgba(30, 92, 57, 1) 50%, rgba(169, 222, 55, 1) 100%) !important;
       background-size: 200% 200% !important;
@@ -194,19 +143,9 @@ function updateDPSMeter(data) {
     playerDiv.classList.add('player')
 
     const hasCustomGradient = 
-      combatant.name === 'Shaddy' || 
-      combatant.name === 'lll' || 
-      combatant.name === 'hiya' || 
-      combatant.name === 'K Z' || 
-      combatant.name === 'Tamed' || 
-      combatant.name === 'Panacea' || 
-      combatant.name === 'NellanFM' ||
-      combatant.name === 'Eve' ||
-      combatant.name === 'Whoah' ||
-      combatant.name === 'You' ||
-      combatant.name === 'Geaven' ||
-      combatant.name === 'Coca Cola' ||
-      combatant.name === 'neen';
+      //combatant.name === 'Cayreah' ||
+      combatant.name === 'Ryiki';
+
 
     if ((combatant.name === 'You' || combatant.isSelf === 'true') && !hasCustomGradient) {
       playerDiv.classList.add('you')
@@ -218,52 +157,8 @@ function updateDPSMeter(data) {
     let gradientBg = document.createElement('div')
     gradientBg.className = 'gradient-bg'
     
-    if (combatant.name === 'Shaddy') {
-      gradientBg.classList.add('rgb-gradient')
-    }
-
-    if (combatant.name === 'lll' || combatant.name === 'hiya') {
-      gradientBg.classList.add('black-gradient')
-    }
-
-    if (combatant.name === 'K Z') {
-      gradientBg.classList.add('white-gradient')
-    }
-
-    if (combatant.name === 'Tamed') {
-      gradientBg.classList.add('pink-gradient')
-    }
-
-    if (combatant.name === 'Panacea') {
-      gradientBg.classList.add('panacea-gradient')
-    }
-
-    if (combatant.name === 'NellanFM') {
-      gradientBg.classList.add('pepe-gradient')
-    }
-
-    if (combatant.name === 'Eve') {
-      gradientBg.classList.add('eve-gradient')
-    }
-
-    if (combatant.name === 'Whoah') {
-      gradientBg.classList.add('whoah-gradient')
-    }
-
     if (combatant.name === 'You') {
-      gradientBg.classList.add('renless-gradient')
-    }
-
-    if (combatant.name === 'Geaven') {
-      gradientBg.style.background = '#2980B9';
-    }
-
-    if (combatant.name === 'Coca Cola') {
-      gradientBg.classList.add('coca-cola-gradient');
-    }
-
-    if (combatant.name === 'neen') {
-      gradientBg.style.background = '#FF2134';
+      gradientBg.classList.add('ryiki-gradient')
     }
 
     gradientBg.style.clipPath = `inset(0 ${100 - widthPercentage}% 0 0)`
@@ -275,20 +170,9 @@ function updateDPSMeter(data) {
     name.className = 'dps-bar-label'
     
     if (combatant.name === 'You') {
-      name.innerHTML = combatant.name + ' <img src="./renless.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'Eve') {
-      name.innerHTML = combatant.name + ' <img src="./eve.svg" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'NellanFM') {
-      name.innerHTML = combatant.name + ' <img src="./nellan.webp" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'Feomatharia') {
-      name.innerHTML = combatant.name + ' <img src="./wizard.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'Geaven') {
-      name.innerHTML = combatant.name + ' <img src="./geaven.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'Coca Cola') {
-      name.innerHTML = '<img src="./cola.png" style="height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'neen') {
-      name.innerHTML = combatant.name + ' <img src="./neen.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else {
+      name.innerHTML = combatant.name + ' <img src="./Nerik_logo.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
+    }
+    else {
       name.textContent = combatant.name
     }
 
