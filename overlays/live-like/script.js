@@ -16,8 +16,8 @@ function hideResizeHandle() {
 
 document.addEventListener('DOMContentLoaded', function () {
   const q = new URLSearchParams(this.location.search);
-  const overrideName = q.get('name') || null;
-  window.overrideName = overrideName;
+  const overrideStyle = q.get('selfStyle') || null;
+  window.overrideStyle = overrideStyle;
 
   if (q.get('font') === 'kr') {
     document.documentElement.setAttribute('lang', 'kr');
@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     .ryiki-gradient {
-      background: #ff0000;
       background: linear-gradient(
         32deg,
         rgba(255, 0, 0, 1) 0%,
@@ -67,7 +66,6 @@ function parseAnyNumberFormat(value) {
   if (value === '∞') return 0;
 
   const stringValue = String(value);
-
   if (stringValue.includes('.') && stringValue.includes(',')) {
     if (stringValue.lastIndexOf('.') < stringValue.lastIndexOf(',')) {
       return Number(stringValue.replace(/\./g, '').replace(',', '.'));
@@ -75,82 +73,44 @@ function parseAnyNumberFormat(value) {
       return Number(stringValue.replace(/,/g, ''));
     }
   }
-
   if (stringValue.includes('.') && !stringValue.includes(',')) {
     if ((stringValue.match(/\./g) || []).length > 1) {
       return Number(stringValue.replace(/\./g, ''));
     }
     return Number(stringValue);
   }
-
   if (stringValue.includes(',') && !stringValue.includes('.')) {
     if ((stringValue.match(/,/g) || []).length > 1) {
       return Number(stringValue.replace(/,/g, ''));
     }
     return Number(stringValue.replace(',', '.'));
   }
-
   return Number(stringValue);
 }
 
 function updateDPSMeter(data) {
   document.getElementById('boss-name').innerText = data.Encounter.title || 'No Data';
-
   let table = document.getElementById('combatantTable');
   table.innerHTML = '';
 
   let combatants = Object.values(data.Combatant);
-  let realYouMatch = null;
-
-  if (window.overrideName) {
-    combatants.forEach(c => {
-      if (c.name !== 'You' && c.name === window.overrideName) {
-        realYouMatch = c;
-      }
-    });
-  }
 
   combatants.forEach(combatant => {
     combatant.damageValue = parseAnyNumberFormat(combatant.damage);
-
-    if (combatant.DPS !== undefined) {
-      combatant.dpsValue = parseAnyNumberFormat(combatant.DPS);
-    } else if (combatant.encdps !== undefined) {
-      combatant.dpsValue = parseAnyNumberFormat(combatant.encdps);
-    } else {
-      combatant.dpsValue = 0;
-    }
-
-    if (combatant['damage%'] !== undefined) {
-      const damagePercentStr = String(combatant['damage%']).replace('%', '');
-      combatant.damagePercent = parseAnyNumberFormat(damagePercentStr);
-    } else {
-      combatant.damagePercent = 0;
-    }
+    combatant.dpsValue = parseAnyNumberFormat(combatant.DPS || combatant.encdps || 0);
+    combatant.damagePercent = parseAnyNumberFormat(String(combatant['damage%'] || '').replace('%', ''));
   });
 
   combatants.sort((a, b) => b.damageValue - a.damageValue);
-
-  const maxDamage = combatants.length > 0
-    ? Math.max(...combatants.map(c => c.damageValue || 0))
-    : 0;
+  const maxDamage = Math.max(...combatants.map(c => c.damageValue || 0));
 
   combatants.forEach(combatant => {
     const currentDamage = combatant.damageValue || 0;
     const widthPercentage = maxDamage > 0 ? (currentDamage / maxDamage) * 100 : 0;
 
-    const isRealYou = (combatant.name === 'You') ||
-                      (window.overrideName && realYouMatch && combatant === realYouMatch);
-
     let playerDiv = document.createElement('div');
     playerDiv.setAttribute('data-player', combatant.name);
     playerDiv.classList.add('player');
-
-    const hasCustomGradient = combatant.name === 'Ryiki';
-
-    if (isRealYou && !hasCustomGradient) {
-      playerDiv.classList.add('you');
-    }
 
     let dpsBar = document.createElement('div');
     dpsBar.className = 'dps-bar';
@@ -158,7 +118,9 @@ function updateDPSMeter(data) {
     let gradientBg = document.createElement('div');
     gradientBg.className = 'gradient-bg';
 
-    if ((combatant.name === 'Ryiki') || (isRealYou && window.overrideName === 'Ryiki')) {
+    if (combatant.name === 'You' && window.overrideStyle === 'Ryiki') {
+      gradientBg.classList.add('ryiki-gradient');
+    } else if (combatant.name === 'Ryiki') {
       gradientBg.classList.add('ryiki-gradient');
     }
 
