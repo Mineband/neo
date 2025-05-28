@@ -201,7 +201,7 @@ function updateDPSMeter(data) {
       combatant.name === 'Tamed' || 
       combatant.name === 'Panacea' || 
       combatant.name === 'NellanFM' ||
-      combatant.name === 'Cayreah' ||
+      combatant.name === 'Eve' ||
       combatant.name === 'Whoah' ||
       combatant.name === 'Ryiki' ||
       combatant.name === 'Geaven' ||
@@ -242,7 +242,7 @@ function updateDPSMeter(data) {
       gradientBg.classList.add('pepe-gradient')
     }
 
-    if (combatant.name === 'Cayreah') {
+    if (combatant.name === 'Eve') {
       gradientBg.classList.add('eve-gradient')
     }
 
@@ -250,7 +250,7 @@ function updateDPSMeter(data) {
       gradientBg.classList.add('whoah-gradient')
     }
 
-    if (combatant.name === 'Ryiki') {
+    if (combatant.name === 'renless') {
       gradientBg.classList.add('renless-gradient')
     }
 
@@ -276,8 +276,18 @@ function updateDPSMeter(data) {
     
     if (combatant.name === 'Ryiki') {
       name.innerHTML = combatant.name + ' <img src="./renless.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
-    } else if (combatant.name === 'Cayreah') {
+    } else if (combatant.name === 'Eve') {
       name.innerHTML = combatant.name + ' <img src="./eve.svg" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
+    } else if (combatant.name === 'NellanFM') {
+      name.innerHTML = combatant.name + ' <img src="./nellan.webp" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
+    } else if (combatant.name === 'Feomatharia') {
+      name.innerHTML = combatant.name + ' <img src="./wizard.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
+    } else if (combatant.name === 'Geaven') {
+      name.innerHTML = combatant.name + ' <img src="./geaven.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
+    } else if (combatant.name === 'Coca Cola') {
+      name.innerHTML = '<img src="./cola.png" style="height: 1rem; vertical-align: middle;" />'
+    } else if (combatant.name === 'neen') {
+      name.innerHTML = combatant.name + ' <img src="./neen.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
     } else {
       name.textContent = combatant.name
     }
