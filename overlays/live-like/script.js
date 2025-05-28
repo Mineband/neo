@@ -97,6 +97,7 @@ function updateDPSMeter(data) {
           const theirDPS = parseAnyNumberFormat(c.DPS || c.encdps || 0);
           if (Math.abs(theirDPS - yourDPS) < 0.01) {
             realPlayerName = c.name;
+            console.log('[Overlay] Saját név felismerve:', realPlayerName);
             break;
           }
         }
