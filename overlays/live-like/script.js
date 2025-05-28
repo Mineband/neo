@@ -250,7 +250,7 @@ function updateDPSMeter(data) {
       gradientBg.classList.add('whoah-gradient')
     }
 
-    if (combatant.name === 'renless') {
+    if (combatant.name === 'Ryiki') {
       gradientBg.classList.add('renless-gradient')
     }
 
