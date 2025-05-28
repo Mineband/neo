@@ -203,14 +203,11 @@ function updateDPSMeter(data) {
       combatant.name === 'NellanFM' ||
       combatant.name === 'Eve' ||
       combatant.name === 'Whoah' ||
-      combatant.name === 'Ryiki' ||
+      combatant.name === 'You' ||
       combatant.name === 'Geaven' ||
       combatant.name === 'Coca Cola' ||
       combatant.name === 'neen';
 
-
-    console.log(`Név: ${combatant.name}, hasCustomGradient: ${hasCustomGradient}`);
-    
     if ((combatant.name === 'You' || combatant.isSelf === 'true') && !hasCustomGradient) {
       playerDiv.classList.add('you')
     }
@@ -253,7 +250,7 @@ function updateDPSMeter(data) {
       gradientBg.classList.add('whoah-gradient')
     }
 
-    if (combatant.name === 'Ryiki') {
+    if (combatant.name === 'You') {
       gradientBg.classList.add('renless-gradient')
     }
 
@@ -277,7 +274,7 @@ function updateDPSMeter(data) {
     const name = document.createElement('span')
     name.className = 'dps-bar-label'
     
-    if (combatant.name === 'Ryiki') {
+    if (combatant.name === 'You') {
       name.innerHTML = combatant.name + ' <img src="./renless.png" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
     } else if (combatant.name === 'Eve') {
       name.innerHTML = combatant.name + ' <img src="./eve.svg" style="width: 1rem; height: 1rem; vertical-align: middle;" />'
