@@ -1,7 +1,5 @@
 const nf = new Intl.NumberFormat('en-US');
 
-let overrideName = null;
-
 layer.on('status', function (e) {
   if (e.type === 'lock') {
     e.message ? hideResizeHandle() : displayResizeHandle();
@@ -18,7 +16,8 @@ function hideResizeHandle() {
 
 document.addEventListener('DOMContentLoaded', function () {
   const q = new URLSearchParams(this.location.search);
-  overrideName = q.get('name') || null;
+  const overrideName = q.get('name') || null;
+  window.overrideName = overrideName;
 
   if (q.get('font') === 'kr') {
     document.documentElement.setAttribute('lang', 'kr');
@@ -101,12 +100,12 @@ function updateDPSMeter(data) {
   table.innerHTML = '';
 
   let combatants = Object.values(data.Combatant);
+  let realYouMatch = null;
 
-  if (overrideName) {
+  if (window.overrideName) {
     combatants.forEach(c => {
-      if (c.name === 'You') {
-        c.name = overrideName;
-        c.isSelf = 'true';
+      if (c.name !== 'You' && c.name === window.overrideName) {
+        realYouMatch = c;
       }
     });
   }
@@ -136,11 +135,12 @@ function updateDPSMeter(data) {
     ? Math.max(...combatants.map(c => c.damageValue || 0))
     : 0;
 
-  combatants.forEach((combatant) => {
+  combatants.forEach(combatant => {
     const currentDamage = combatant.damageValue || 0;
-    const widthPercentage = maxDamage > 0
-      ? (currentDamage / maxDamage) * 100
-      : 0;
+    const widthPercentage = maxDamage > 0 ? (currentDamage / maxDamage) * 100 : 0;
+
+    const isRealYou = (combatant.name === 'You') ||
+                      (window.overrideName && realYouMatch && combatant === realYouMatch);
 
     let playerDiv = document.createElement('div');
     playerDiv.setAttribute('data-player', combatant.name);
@@ -148,7 +148,7 @@ function updateDPSMeter(data) {
 
     const hasCustomGradient = combatant.name === 'Ryiki';
 
-    if ((combatant.name === 'You' || combatant.isSelf === 'true') && !hasCustomGradient) {
+    if (isRealYou && !hasCustomGradient) {
       playerDiv.classList.add('you');
     }
 
@@ -158,7 +158,7 @@ function updateDPSMeter(data) {
     let gradientBg = document.createElement('div');
     gradientBg.className = 'gradient-bg';
 
-    if (combatant.name === 'Ryiki') {
+    if ((combatant.name === 'Ryiki') || (isRealYou && window.overrideName === 'Ryiki')) {
       gradientBg.classList.add('ryiki-gradient');
     }
 
@@ -169,12 +169,7 @@ function updateDPSMeter(data) {
 
     const name = document.createElement('span');
     name.className = 'dps-bar-label';
-
-    if (combatant.name === 'Ryiki') {
-      name.innerHTML = combatant.name + ' <img src="./Nerik_logo.png" style="width: 1.5rem; height: 1.5rem; vertical-align: middle;" />';
-    } else {
-      name.textContent = combatant.name;
-    }
+    name.textContent = combatant.name;
 
     const dps = document.createElement('span');
     dps.className = 'dps-bar-value';
@@ -187,59 +182,6 @@ function updateDPSMeter(data) {
     playerDiv.appendChild(dpsBar);
     table.appendChild(playerDiv);
   });
-}
-
-function showSkills(combatant, event) {
-  const skillDetails = document.getElementById('skill-details');
-  const referenceElement = {
-    getBoundingClientRect: () => ({
-      width: 0,
-      height: 0,
-      top: event.clientY,
-      right: event.clientX,
-      bottom: event.clientY,
-      left: event.clientX,
-    }),
-  };
-
-  let skillHTML = `
-      <div class="skill-summary">Total Damage: ${combatant['damage-*']} (${combatant['damage%']})</div>
-      <div class="skill-summary">Hits: ${combatant['hits']}</div>
-      <div class="skill-summary">Total Crit %: ${combatant['crithit%']}</div>
-      <div class="skill-summary">Max Hit: ${combatant['maxhit-*']}</div>
-      <div class="skill-labels">
-          <span>Skill</span>
-          <span>Hits</span>
-          <span>Crit %</span>
-          <span>Damage</span>
-      </div>
-      <div class="skill">No skill data available</div>
-  `;
-
-  skillDetails.innerHTML = skillHTML;
-  skillDetails.style.display = 'block';
-
-  if (popperInstance) {
-    popperInstance.destroy();
-  }
-
-  popperInstance = Popper.createPopper(referenceElement, skillDetails, {
-    placement: 'right-start',
-    modifiers: [
-      { name: 'offset', options: { offset: [0, 10] } },
-      { name: 'preventOverflow', options: { padding: 10 } },
-      { name: 'flip', options: { padding: 10 } },
-    ],
-  });
-}
-
-function hideSkills() {
-  const skillDetails = document.getElementById('skill-details');
-  skillDetails.style.display = 'none';
-  if (popperInstance) {
-    popperInstance.destroy();
-    popperInstance = null;
-  }
 }
 
 function setupZoomControls() {
