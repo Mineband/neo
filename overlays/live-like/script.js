@@ -22,23 +22,25 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   const style = document.createElement('style');
-  style.textContent = 
+  style.textContent = `
     .rgb-gradient {
       background: linear-gradient(-45deg, #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff) !important;
       background-size: 200% 200% !important;
       animation: gradientFlow 6s ease infinite;
       opacity: 0.9;
     }
-    .ryiki-gradient {
-      background: #ff0000;
-      background: linear-gradient(
-        32deg,
-        rgba(255, 0, 0, 1) 0%,
-        rgba(255, 102, 102, 1) 50%,
-        rgba(255, 255, 255, 1) 100%
-      ) !important;
-      opacity: 0.9;
-    }
+  .ryiki-gradient {
+    background: #ff0000;
+    background: linear-gradient(
+      32deg,
+      rgba(255, 0, 0, 1) 0%,
+      rgba(255, 102, 102, 1) 50%,
+      rgba(255, 255, 255, 1) 100% 
+    ) !important;
+    background-size: 200% 200% !important;
+    animation: gradientFlow 6s ease infinite;
+    opacity: 0.9;
+  }
     @keyframes gradientFlow {
       0% { background-position: 0% 50%; }
       25% { background-position: 100% 0%; }
@@ -46,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
       75% { background-position: 0% 100%; }
       100% { background-position: 0% 50%; }
     }
-  ;
+  `;
   document.head.appendChild(style);
 
   layer.connect();
@@ -160,11 +162,11 @@ function updateDPSMeter(data) {
     let gradientBg = document.createElement('div')
     gradientBg.className = 'gradient-bg'
     
-    if (combatant.name === 'Ryiki') {
+    if (combatant.name === 'You') {
       gradientBg.classList.add('ryiki-gradient')
     }
 
-    gradientBg.style.clipPath = inset(0 ${100 - widthPercentage}% 0 0)
+    gradientBg.style.clipPath = `inset(0 ${100 - widthPercentage}% 0 0)`
     
     let barContent = document.createElement('div')
     barContent.className = 'bar-content'
@@ -172,7 +174,7 @@ function updateDPSMeter(data) {
     const name = document.createElement('span')
     name.className = 'dps-bar-label'
     
-    if (combatant.name === 'Ryiki') {
+    if (combatant.name === 'You') {
       name.innerHTML = combatant.name + ' <img src="./Nerik_logo.png" style="width: 1.5rem; height: 1.5rem; vertical-align: middle;" />'
     }
     else {
@@ -181,7 +183,7 @@ function updateDPSMeter(data) {
 
     const dps = document.createElement('span')
     dps.className = 'dps-bar-value'
-    dps.textContent = ${nf.format(combatant.dpsValue)}/sec
+    dps.textContent = `${nf.format(combatant.dpsValue)}/sec`
 
     barContent.appendChild(name)
     barContent.appendChild(dps)
@@ -205,7 +207,7 @@ function showSkills(combatant, event) {
     }),
   }
 
-  let skillHTML = 
+  let skillHTML = `
       <div class="skill-summary">Total Damage: ${combatant['damage-*']} (${combatant['damage%']})</div>
       <div class="skill-summary">Hits: ${combatant['hits']}</div>
       <div class="skill-summary">Total Crit %: ${combatant['crithit%']}</div>
@@ -215,9 +217,9 @@ function showSkills(combatant, event) {
           <span>Hits</span>
           <span>Crit %</span>
           <span>Damage</span>
-      </div>
+      </div>`
       
-  skillHTML += <div class="skill">No skill data available</div>
+  skillHTML += `<div class="skill">No skill data available</div>`
   skillDetails.innerHTML = skillHTML
   skillDetails.style.display = 'block'
 
@@ -276,7 +278,7 @@ function setupZoomControls() {
   }
 
   function applyZoom() {
-    root.style.fontSize = ${currentZoom / 100}rem;
+    root.style.fontSize = `${currentZoom / 100}rem`;
     
     localStorage.setItem('dpsMeterZoom', currentZoom);
   }
