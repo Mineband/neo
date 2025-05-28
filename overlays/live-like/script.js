@@ -145,14 +145,18 @@ function updateDPSMeter(data) {
     
     playerDiv.classList.add('player')
 
+    if (combatant.name === 'You' || combatant.isSelf === 'true') {
+      combatant.name = playerName; // ← cseréljük le a "You"-t a valódi névre
+      combatant.isSelf = 'true'; // biztos ami biztos
+    }
+
     const hasCustomGradient = 
       //combatant.name === 'Cayreah' ||
       combatant.name === 'Ryiki';
 
-
-    if ((combatant.name === 'You' || combatant.isSelf === 'true') && !hasCustomGradient) {
-      playerDiv.classList.add('you')
-    }
+      if (combatant.isSelf === 'true' && !hasCustomGradient) {
+        playerDiv.classList.add('you');
+      }
 
     let dpsBar = document.createElement('div')
     dpsBar.className = 'dps-bar'
