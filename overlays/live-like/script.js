@@ -5,11 +5,7 @@ const customStyles = {
     style: 'ryiki-gradient',
     icon: 'icons/Nerik_logo.png'
   },
-  cayreah: {
-    style: 'cayreah-gradient',
-    icon: 'icons/Cayreah_logo.png'
-  }
-  // ide bővítheted tovább
+  // bővítés
 };
 
 layer.on('status', function (e) {
@@ -140,7 +136,7 @@ function updateDPSMeter(data) {
     name.className = 'dps-bar-label';
 
     if (config?.icon) {
-      name.innerHTML = `<img src="${config.icon}" class="player-icon" /> ${combatant.name}`;
+      name.innerHTML = `${combatant.name} <img src="${config.icon}" class="player-icon" />`;
     } else {
       name.textContent = combatant.name;
     }
