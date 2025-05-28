@@ -208,7 +208,10 @@ function updateDPSMeter(data) {
       combatant.name === 'Coca Cola' ||
       combatant.name === 'neen';
 
-    if ((combatant.name === 'You' || combatant.isSelf === 'false') && !hasCustomGradient) {
+
+    console.log(`Név: ${combatant.name}, hasCustomGradient: ${hasCustomGradient}`);
+    
+    if ((combatant.name === 'You' || combatant.isSelf === 'true') && !hasCustomGradient) {
       playerDiv.classList.add('you')
     }
 
