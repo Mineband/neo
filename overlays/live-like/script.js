@@ -1,4 +1,6 @@
-const nf = new Intl.NumberFormat('en-US')
+const nf = new Intl.NumberFormat('en-US');
+
+let overrideName = null;
 
 layer.on('status', function (e) {
   if (e.type === 'lock') {
@@ -7,18 +9,19 @@ layer.on('status', function (e) {
 });
 
 function displayResizeHandle() {
-  document.documentElement.classList.add("resizeHandle")
+  document.documentElement.classList.add("resizeHandle");
 }
 
 function hideResizeHandle() {
-  document.documentElement.classList.remove("resizeHandle")
+  document.documentElement.classList.remove("resizeHandle");
 }
 
 document.addEventListener('DOMContentLoaded', function () {
   const q = new URLSearchParams(this.location.search);
+  overrideName = q.get('name') || null;
 
   if (q.get('font') === 'kr') {
-    document.documentElement.setAttribute('lang', 'kr')
+    document.documentElement.setAttribute('lang', 'kr');
   }
 
   const style = document.createElement('style');
@@ -31,15 +34,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     .ryiki-gradient {
-    background: #ff0000;
-    background: linear-gradient(
-      32deg,
-      rgba(255, 0, 0, 1) 0%,
-      rgba(255, 102, 102, 1) 50%,
-      rgba(255, 255, 255, 1) 100%
-    ) !important;
-    opacity: 0.9;
-  }
+      background: #ff0000;
+      background: linear-gradient(
+        32deg,
+        rgba(255, 0, 0, 1) 0%,
+        rgba(255, 102, 102, 1) 50%,
+        rgba(255, 255, 255, 1) 100%
+      ) !important;
+      opacity: 0.9;
+    }
+
     @keyframes gradientFlow {
       0% { background-position: 0% 50%; }
       25% { background-position: 100% 0%; }
@@ -54,62 +58,63 @@ document.addEventListener('DOMContentLoaded', function () {
   layer.on('data', updateDPSMeter);
 
   setupZoomControls();
-})
+});
 
-let popperInstance = null
+let popperInstance = null;
 
 function parseAnyNumberFormat(value) {
-  if (value === undefined || value === null || value === '') {
-    return 0;
-  }
-  
-  if (typeof value === 'number') {
-    return value;
-  }
-  
-  if (value === '∞') {
-    return 0;
-  }
-  
+  if (value === undefined || value === null || value === '') return 0;
+  if (typeof value === 'number') return value;
+  if (value === '∞') return 0;
+
   const stringValue = String(value);
-  
+
   if (stringValue.includes('.') && stringValue.includes(',')) {
     if (stringValue.lastIndexOf('.') < stringValue.lastIndexOf(',')) {
       return Number(stringValue.replace(/\./g, '').replace(',', '.'));
-    } 
-    else {
+    } else {
       return Number(stringValue.replace(/,/g, ''));
     }
   }
-  
+
   if (stringValue.includes('.') && !stringValue.includes(',')) {
     if ((stringValue.match(/\./g) || []).length > 1) {
       return Number(stringValue.replace(/\./g, ''));
     }
     return Number(stringValue);
   }
-  
+
   if (stringValue.includes(',') && !stringValue.includes('.')) {
     if ((stringValue.match(/,/g) || []).length > 1) {
       return Number(stringValue.replace(/,/g, ''));
     }
     return Number(stringValue.replace(',', '.'));
   }
-  
+
   return Number(stringValue);
 }
 
 function updateDPSMeter(data) {
-  document.getElementById('boss-name').innerText = data.Encounter.title || 'No Data'
+  document.getElementById('boss-name').innerText = data.Encounter.title || 'No Data';
 
-  let table = document.getElementById('combatantTable')
-  table.innerHTML = ''
+  let table = document.getElementById('combatantTable');
+  table.innerHTML = '';
 
-  let combatants = Object.values(data.Combatant)
-  
+  let combatants = Object.values(data.Combatant);
+
+  // 👇 Itt cseréljük le a "You" nevű combatantot, ha van megadott név
+  if (overrideName) {
+    combatants.forEach(c => {
+      if (c.name === 'You') {
+        c.name = overrideName;
+        c.isSelf = 'true';
+      }
+    });
+  }
+
   combatants.forEach(combatant => {
     combatant.damageValue = parseAnyNumberFormat(combatant.damage);
-    
+
     if (combatant.DPS !== undefined) {
       combatant.dpsValue = parseAnyNumberFormat(combatant.DPS);
     } else if (combatant.encdps !== undefined) {
@@ -117,84 +122,76 @@ function updateDPSMeter(data) {
     } else {
       combatant.dpsValue = 0;
     }
-    
+
     if (combatant['damage%'] !== undefined) {
       const damagePercentStr = String(combatant['damage%']).replace('%', '');
       combatant.damagePercent = parseAnyNumberFormat(damagePercentStr);
     } else {
       combatant.damagePercent = 0;
     }
-  })
-  
-  combatants.sort((a, b) => b.damageValue - a.damageValue)
+  });
 
-  const maxDamage = combatants.length > 0 
-    ? Math.max(...combatants.map(c => c.damageValue || 0)) 
-    : 0
+  combatants.sort((a, b) => b.damageValue - a.damageValue);
+
+  const maxDamage = combatants.length > 0
+    ? Math.max(...combatants.map(c => c.damageValue || 0))
+    : 0;
 
   combatants.forEach((combatant) => {
-    const currentDamage = combatant.damageValue || 0
-    const widthPercentage = maxDamage > 0 
-      ? (currentDamage / maxDamage) * 100 
-      : 0
+    const currentDamage = combatant.damageValue || 0;
+    const widthPercentage = maxDamage > 0
+      ? (currentDamage / maxDamage) * 100
+      : 0;
 
-    let playerDiv = document.createElement('div')
-    
-    playerDiv.setAttribute('data-player', combatant.name)
-    // playerDiv.addEventListener('mouseenter', (event) => showSkills(combatant, event))
-    // playerDiv.addEventListener('mouseleave', hideSkills)
-    
-    playerDiv.classList.add('player')
+    let playerDiv = document.createElement('div');
+    playerDiv.setAttribute('data-player', combatant.name);
+    playerDiv.classList.add('player');
 
-    const hasCustomGradient = 
-      //combatant.name === 'Cayreah' ||
-      combatant.name === 'Ryiki';
-
+    const hasCustomGradient = combatant.name === 'Ryiki';
 
     if ((combatant.name === 'You' || combatant.isSelf === 'true') && !hasCustomGradient) {
-      playerDiv.classList.add('you')
+      playerDiv.classList.add('you');
     }
 
-    let dpsBar = document.createElement('div')
-    dpsBar.className = 'dps-bar'
+    let dpsBar = document.createElement('div');
+    dpsBar.className = 'dps-bar';
 
-    let gradientBg = document.createElement('div')
-    gradientBg.className = 'gradient-bg'
-    
+    let gradientBg = document.createElement('div');
+    gradientBg.className = 'gradient-bg';
+
     if (combatant.name === 'Ryiki') {
-      gradientBg.classList.add('ryiki-gradient')
+      gradientBg.classList.add('ryiki-gradient');
     }
 
-    gradientBg.style.clipPath = `inset(0 ${100 - widthPercentage}% 0 0)`
-    
-    let barContent = document.createElement('div')
-    barContent.className = 'bar-content'
+    gradientBg.style.clipPath = `inset(0 ${100 - widthPercentage}% 0 0)`;
 
-    const name = document.createElement('span')
-    name.className = 'dps-bar-label'
-    
+    let barContent = document.createElement('div');
+    barContent.className = 'bar-content';
+
+    const name = document.createElement('span');
+    name.className = 'dps-bar-label';
+
     if (combatant.name === 'Ryiki') {
-      name.innerHTML = combatant.name + ' <img src="./Nerik_logo.png" style="width: 1.5rem; height: 1.5rem; vertical-align: middle;" />'
-    }
-    else {
-      name.textContent = combatant.name
+      name.innerHTML = combatant.name + ' <img src="./Nerik_logo.png" style="width: 1.5rem; height: 1.5rem; vertical-align: middle;" />';
+    } else {
+      name.textContent = combatant.name;
     }
 
-    const dps = document.createElement('span')
-    dps.className = 'dps-bar-value'
-    dps.textContent = `${nf.format(combatant.dpsValue)}/sec`
+    const dps = document.createElement('span');
+    dps.className = 'dps-bar-value';
+    dps.textContent = `${nf.format(combatant.dpsValue)}/sec`;
 
-    barContent.appendChild(name)
-    barContent.appendChild(dps)
-    dpsBar.appendChild(gradientBg)
-    dpsBar.appendChild(barContent)
-    playerDiv.appendChild(dpsBar)
-    table.appendChild(playerDiv)
-  })
+    barContent.appendChild(name);
+    barContent.appendChild(dps);
+    dpsBar.appendChild(gradientBg);
+    dpsBar.appendChild(barContent);
+    playerDiv.appendChild(dpsBar);
+    table.appendChild(playerDiv);
+  });
 }
 
 function showSkills(combatant, event) {
-  const skillDetails = document.getElementById('skill-details')
+  const skillDetails = document.getElementById('skill-details');
   const referenceElement = {
     getBoundingClientRect: () => ({
       width: 0,
@@ -204,7 +201,7 @@ function showSkills(combatant, event) {
       bottom: event.clientY,
       left: event.clientX,
     }),
-  }
+  };
 
   let skillHTML = `
       <div class="skill-summary">Total Damage: ${combatant['damage-*']} (${combatant['damage%']})</div>
@@ -216,47 +213,33 @@ function showSkills(combatant, event) {
           <span>Hits</span>
           <span>Crit %</span>
           <span>Damage</span>
-      </div>`
-      
-  skillHTML += `<div class="skill">No skill data available</div>`
-  skillDetails.innerHTML = skillHTML
-  skillDetails.style.display = 'block'
+      </div>
+      <div class="skill">No skill data available</div>
+  `;
+
+  skillDetails.innerHTML = skillHTML;
+  skillDetails.style.display = 'block';
 
   if (popperInstance) {
-    popperInstance.destroy()
+    popperInstance.destroy();
   }
 
   popperInstance = Popper.createPopper(referenceElement, skillDetails, {
     placement: 'right-start',
     modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 10],
-        },
-      },
-      {
-        name: 'preventOverflow',
-        options: {
-          padding: 10,
-        },
-      },
-      {
-        name: 'flip',
-        options: {
-          padding: 10,
-        },
-      },
+      { name: 'offset', options: { offset: [0, 10] } },
+      { name: 'preventOverflow', options: { padding: 10 } },
+      { name: 'flip', options: { padding: 10 } },
     ],
-  })
+  });
 }
 
 function hideSkills() {
-  const skillDetails = document.getElementById('skill-details')
-  skillDetails.style.display = 'none'
+  const skillDetails = document.getElementById('skill-details');
+  skillDetails.style.display = 'none';
   if (popperInstance) {
-    popperInstance.destroy()
-    popperInstance = null
+    popperInstance.destroy();
+    popperInstance = null;
   }
 }
 
@@ -265,7 +248,7 @@ function setupZoomControls() {
   const zoomInBtn = document.getElementById('zoom-in');
   const root = document.documentElement;
 
-  let currentZoom = 100; 
+  let currentZoom = 100;
   const minZoom = 50;
   const maxZoom = 200;
   const zoomStep = 10;
@@ -278,7 +261,6 @@ function setupZoomControls() {
 
   function applyZoom() {
     root.style.fontSize = `${currentZoom / 100}rem`;
-    
     localStorage.setItem('dpsMeterZoom', currentZoom);
   }
 
