@@ -8,6 +8,21 @@
   opacity: 0.9;
 }
 
+.kitsunetsuki-gradient {
+  background: linear-gradient(
+    32deg,
+    rgb(75, 2, 2) 0%,
+    rgb(0, 0, 0) 40%,
+    rgb(0, 4, 255) 50%,
+    rgb(105, 1, 1) 60%,
+    rgb(134, 1, 1) 70%,
+    rgb(202, 3, 3) 80%,
+    rgb(15, 0, 0) 90%,
+    rgb(0, 0, 0) 95%
+  ) !important;
+  opacity: 0.9;
+}
+
 /*.cayreah-gradient {
   background: linear-gradient(
     45deg,
@@ -18,9 +33,6 @@
   opacity: 0.9;
 }*/
 
-.you {
-  background-color: #00cc66 !important;
-}
 
 .player-icon {
   width: 1.5rem;

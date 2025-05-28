@@ -5,6 +5,10 @@ const customStyles = {
     style: 'ryiki-gradient',
     icon: 'icons/Nerik_logo.png'
   },
+  kitsunetsuki: {
+    style: 'kitsunetsuki-gradient',
+    icon: 'icons/Grim_icon.png'
+  },
   // bővítés
 };
 
