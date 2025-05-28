@@ -102,7 +102,6 @@ function updateDPSMeter(data) {
 
   let combatants = Object.values(data.Combatant);
 
-  // 👇 Itt cseréljük le a "You" nevű combatantot, ha van megadott név
   if (overrideName) {
     combatants.forEach(c => {
       if (c.name === 'You') {
