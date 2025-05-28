@@ -83,13 +83,17 @@ function parseAnyNumberFormat(value) {
 }
 
 function updateDPSMeter(data) {
+  let combatants = Object.values(data.Combatant);
+  console.log('Combatants:', combatants.map(c => c.name));
+
   document.getElementById('boss-name').innerText = data.Encounter.title || 'No Data';
-  let table = document.getElementById('combatantTable')
-  table.innerHTML = ''
-  let combatants = Object.values(data.Combatant)
+  let table = document.getElementById('combatantTable');
+  table.innerHTML = '';
 
   if (!realPlayerName) {
     const youEntry = combatants.find(c => c.name === 'You' || c.isSelf === 'true');
+    console.log('[Overlay] You entry:', youEntry);
+
     if (youEntry) {
       const yourDPS = parseAnyNumberFormat(youEntry.DPS || youEntry.encdps || 0);
       for (let c of combatants) {
@@ -104,6 +108,7 @@ function updateDPSMeter(data) {
       }
     }
   }
+
 
   combatants.forEach(combatant => {
     if (combatant.name === 'You' && realPlayerName) {
