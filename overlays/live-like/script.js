@@ -208,7 +208,7 @@ function updateDPSMeter(data) {
       combatant.name === 'Coca Cola' ||
       combatant.name === 'neen';
 
-    if ((combatant.name === 'You' || combatant.isSelf === 'true') && !hasCustomGradient) {
+    if ((combatant.name === 'You' || combatant.isSelf === 'false') && !hasCustomGradient) {
       playerDiv.classList.add('you')
     }
 
