@@ -29,16 +29,15 @@ document.addEventListener('DOMContentLoaded', function () {
       animation: gradientFlow 6s ease infinite;
       opacity: 0.9;
     }
-  .ryiki-gradient {
+
+    .ryiki-gradient {
     background: #ff0000;
     background: linear-gradient(
       32deg,
       rgba(255, 0, 0, 1) 0%,
       rgba(255, 102, 102, 1) 50%,
-      rgba(255, 255, 255, 1) 100% 
+      rgba(255, 255, 255, 1) 100%
     ) !important;
-    background-size: 200% 200% !important;
-    animation: gradientFlow 6s ease infinite;
     opacity: 0.9;
   }
     @keyframes gradientFlow {
@@ -162,7 +161,7 @@ function updateDPSMeter(data) {
     let gradientBg = document.createElement('div')
     gradientBg.className = 'gradient-bg'
     
-    if (combatant.name === 'You') {
+    if (combatant.name === 'Ryiki') {
       gradientBg.classList.add('ryiki-gradient')
     }
 
@@ -174,7 +173,7 @@ function updateDPSMeter(data) {
     const name = document.createElement('span')
     name.className = 'dps-bar-label'
     
-    if (combatant.name === 'You') {
+    if (combatant.name === 'Ryiki') {
       name.innerHTML = combatant.name + ' <img src="./Nerik_logo.png" style="width: 1.5rem; height: 1.5rem; vertical-align: middle;" />'
     }
     else {
