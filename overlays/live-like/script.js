@@ -9,7 +9,7 @@ const customStyles = {
     style: 'kitsunetsuki-gradient',
     icon: 'icons/Grim_icon.png'
   },
-  kircsi: {
+  kissy: {
     style: 'kircsi-gradient',
     icon: 'icons/Kircsi_icon.png'
   },
