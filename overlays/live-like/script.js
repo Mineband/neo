@@ -1,27 +1,27 @@
 const nf = new Intl.NumberFormat('en-US');
 
 const customStyles = {
-  ryiki: {
+  "ryiki": {
     style: 'ryiki-gradient',
     icon: 'icons/Nerik_logo.png'
   },
-  kitsunetsuki: {
+  "kitsunetsuki": {
     style: 'kitsunetsuki-gradient',
     icon: 'icons/Grim_icon.png'
   },
-  kissy: {
+  "kissy": {
     style: 'kircsi-gradient',
     icon: 'icons/Kircsi_icon.png'
   },
-    cayreah: {
+  "cayreah": {
     style: 'cayreah-gradient',
     //icon: 'icons/Kircsi_icon.png'
   },
-  gábor: {
+  "gábor": {
     style: 'gabor-gradient',
     //icon: 'icons/Kircsi_icon.png'
   },
-  tokita kazu: {
+  "tokita kazu": {
     style: 'tokita-gradient',
     //icon: 'icons/Kircsi_icon.png'
   },
