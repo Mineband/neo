@@ -13,6 +13,14 @@ const customStyles = {
     style: 'kircsi-gradient',
     icon: 'icons/Kircsi_icon.png'
   },
+    cayreah: {
+    style: 'cayreah-gradient',
+    //icon: 'icons/Kircsi_icon.png'
+  },
+  gábor: {
+    style: 'gabor-gradient',
+    //icon: 'icons/Kircsi_icon.png'
+  },
   // bővítés
 };
 

@@ -1,6 +1,5 @@
 .ryiki-gradient {
   background:
-    linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.0)),
     url('images/Nerik_Banner.gif') center center / cover no-repeat !important;
   opacity: 0.9;
 }
@@ -27,16 +26,17 @@
       opacity: 0.9;
 }
 
-/*.cayreah-gradient {
-  background: linear-gradient(
-    45deg,
-    rgba(0, 102, 204, 1) 0%,
-    rgba(102, 204, 255, 1) 50%,
-    rgba(255, 255, 255, 1) 100%
-  ) !important;
+.cayreah-gradient {
+  background:
+    url('images/Cayreah_Banner.png') center center / cover no-repeat !important;
   opacity: 0.9;
-}*/
+}
 
+.gabor-gradient {
+  background:
+    url('images/Gabor_Banner.gif') center center / cover no-repeat !important;
+  opacity: 0.9;
+}
 
 .player-icon {
   width: 1.5rem;
