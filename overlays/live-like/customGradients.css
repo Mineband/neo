@@ -38,6 +38,12 @@
   opacity: 0.9;
 }
 
+.tokita-gradient {
+  background:
+    url('images/Tokita_Banner.gif') center center / cover no-repeat !important;
+  opacity: 0.9;
+}
+
 .player-icon {
   width: 1.5rem;
   height: 1.5rem;

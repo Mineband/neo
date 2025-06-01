@@ -21,6 +21,10 @@ const customStyles = {
     style: 'gabor-gradient',
     //icon: 'icons/Kircsi_icon.png'
   },
+  tokita kazu: {
+    style: 'tokita-gradient',
+    //icon: 'icons/Kircsi_icon.png'
+  },
   // bővítés
 };
 
