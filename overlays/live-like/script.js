@@ -15,15 +15,12 @@ const customStyles = {
   },
   "cayreah": {
     style: 'cayreah-gradient',
-    //icon: 'icons/Kircsi_icon.png'
   },
   "gábor": {
     style: 'gabor-gradient',
-    //icon: 'icons/Kircsi_icon.png'
   },
   "tokita kazu": {
     style: 'tokita-gradient',
-    //icon: 'icons/Kircsi_icon.png'
   },
   // bővítés
 };
@@ -106,6 +103,15 @@ function styleClassExists(className) {
 }
 
 function updateDPSMeter(data) {
+  // Extract player name from Encounter.title (format: timestamp|playerName|logText)
+  let playerName = 'You';
+  if (typeof data.Encounter.title === 'string' && data.Encounter.title.includes('|')) {
+    const parts = data.Encounter.title.split('|');
+    if (parts.length >= 2) {
+      playerName = parts[1].trim();
+    }
+  }
+
   document.getElementById('boss-name').innerText = data.Encounter.title || 'No Data';
   let table = document.getElementById('combatantTable');
   table.innerHTML = '';
@@ -137,7 +143,7 @@ function updateDPSMeter(data) {
     let gradientBg = document.createElement('div');
     gradientBg.className = 'gradient-bg';
 
-    const isSelf = combatant.name === 'You';
+    const isSelf = combatant.name.toLowerCase() === playerName.toLowerCase();
     const combatantKey = isSelf ? override : combatant.name.toLowerCase();
     const config = customStyles[combatantKey];
 
