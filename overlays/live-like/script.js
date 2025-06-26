@@ -13,10 +13,6 @@ const customStyles = {
     style: 'kircsi-gradient',
     icon: 'icons/Kircsi_icon.png'
   },
-  "cayreah": {
-    style: 'cayreah-gradient',
-    //icon: 'icons/Kircsi_icon.png'
-  },
   "gábor": {
     style: 'gabor-gradient',
     //icon: 'icons/Kircsi_icon.png'
@@ -124,23 +120,26 @@ function updateDPSMeter(data) {
 
   combatants.sort((a, b) => b.damageValue - a.damageValue);
   const maxDamage = Math.max(...combatants.map(c => c.damageValue || 0));
+  let isUseAllowed = true;
 
-combatants.forEach(combatant => {
-  let playerName = combatant.name;
-  if (playerName === 'You') {
-    const hit = combatant.maxhit || '';
-    const match = hit.match(/\(as ([^)]+)\)/);
-    if (match) playerName = match[1];
-  }
 
-  const normalizedName = playerName.toLowerCase();
-  const isGuildMember = guildMembers.includes(playerName);
+  combatants.forEach(combatant => {
+    let playerName = combatant.name;
+    if (playerName === 'You') {
+      const hit = combatant.maxhit || '';
+      const match = hit.match(/\(as ([^)]+)\)/);
+      if (match) playerName = match[1];
+    }
 
-  let playerDiv = document.createElement('div');
-  playerDiv.setAttribute('data-player', combatant.name);
-  playerDiv.classList.add('player');
+    const isGuildMember = guildMembers.includes(playerName);
+    if (!isGuildMember && combatant.name === 'You') {
+      isUseAllowed = false;
+    }
+  })
 
-  if (!isGuildMember) {
+
+  if (!isUseAllowed) {
+    let playerDiv = document.createElement('div');
     const warning = document.createElement('div');
     warning.className = 'guild-warning';
     warning.textContent = '© Only For Guild Members — Csábító Tea Party';
@@ -150,46 +149,62 @@ combatants.forEach(combatant => {
     return;
   }
 
-  const currentDamage = combatant.damageValue || 0;
-  const widthPercentage = maxDamage > 0 ? (currentDamage / maxDamage) * 100 : 0;
 
-  const config = customStyles[normalizedName];
+  combatants.forEach(combatant => {
+    let playerName = combatant.name;
+        if (playerName === 'You') {
+      const hit = combatant.maxhit || '';
+      const match = hit.match(/\(as ([^)]+)\)/);
+      if (match) playerName = match[1];
+    }
+    const normalizedName = playerName.toLowerCase();
 
-  let dpsBar = document.createElement('div');
-  dpsBar.className = 'dps-bar';
+    let playerDiv = document.createElement('div');
+    playerDiv.setAttribute('data-player', combatant.name);
+    playerDiv.classList.add('player');
 
-  let gradientBg = document.createElement('div');
-  gradientBg.className = 'gradient-bg';
-  if (config?.style) {
-    gradientBg.classList.add(config.style);
-  } else if (combatant.name === 'You') {
-    playerDiv.classList.add('you');
-  }
-  gradientBg.style.clipPath = `inset(0 ${100 - widthPercentage}% 0 0)`;
+    const currentDamage = combatant.damageValue || 0;
+    const widthPercentage = maxDamage > 0 ? (currentDamage / maxDamage) * 100 : 0;
 
-  let barContent = document.createElement('div');
-  barContent.className = 'bar-content';
+    const config = customStyles[normalizedName];
 
-  const name = document.createElement('span');
-  name.className = 'dps-bar-label';
+    let dpsBar = document.createElement('div');
+    dpsBar.className = 'dps-bar';
 
-  if (config?.icon) {
-    name.innerHTML = `${playerName} <img src="${config.icon}" class="player-icon" />`;
-  } else {
-    name.textContent = playerName;
-  }
+    let gradientBg = document.createElement('div');
+    gradientBg.className = 'gradient-bg';
+    if (config?.style) {
+      gradientBg.classList.add(config.style);
+    } else if (combatant.name === 'You') {
+      playerDiv.classList.add('you');
+    }
+    gradientBg.style.clipPath = `inset(0 ${100 - widthPercentage}% 0 0)`;
 
-  const dps = document.createElement('span');
-  dps.className = 'dps-bar-value';
-  dps.textContent = `${nf.format(combatant.dpsValue)}/sec`;
+    let barContent = document.createElement('div');
+    barContent.className = 'bar-content';
 
-  barContent.appendChild(name);
-  barContent.appendChild(dps);
-  dpsBar.appendChild(gradientBg);
-  dpsBar.appendChild(barContent);
-  playerDiv.appendChild(dpsBar);
-  table.appendChild(playerDiv);
-})}
+    const name = document.createElement('span');
+    name.className = 'dps-bar-label';
+
+    if (config?.icon) {
+      name.innerHTML = `${combatant.name} <img src="${config.icon}" class="player-icon" />`;
+    } else {
+      name.textContent = combatant.name;
+    }
+
+    const dps = document.createElement('span');
+    dps.className = 'dps-bar-value';
+    dps.textContent = `${nf.format(combatant.dpsValue)}/sec`;
+
+    barContent.appendChild(name);
+    barContent.appendChild(dps);
+    dpsBar.appendChild(gradientBg);
+    dpsBar.appendChild(barContent);
+    playerDiv.appendChild(dpsBar);
+    table.appendChild(playerDiv);
+  })
+}
+
 
 
 
