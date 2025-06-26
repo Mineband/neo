@@ -28,6 +28,12 @@ const customStyles = {
   // bővítés
 };
 
+const guildMembers = [
+  "NiNl", "Kissy", "Ryiki", "Tokita Kazu", "Leyaress", "Kitsunetsuki", "obzoR", "Lootoneesan", "Sanwo",
+  "Gábor", "Imfa", "Tokita Kei", "Lupi", "Domboss", "Entaa", "Rlyreen", "HalibeLL", "LupiDojin", "GrimWLock"
+];
+
+
 layer.on('status', function (e) {
   if (e.type === 'lock') {
     e.message ? hideResizeHandle() : displayResizeHandle();
@@ -44,8 +50,6 @@ function hideResizeHandle() {
 
 document.addEventListener('DOMContentLoaded', function () {
   const q = new URLSearchParams(this.location.search);
-  const overrideStyle = q.get('selfStyle') || null;
-  window.overrideStyle = overrideStyle;
 
   if (q.get('font') === 'kr') {
     document.documentElement.setAttribute('lang', 'kr');
@@ -121,58 +125,73 @@ function updateDPSMeter(data) {
   combatants.sort((a, b) => b.damageValue - a.damageValue);
   const maxDamage = Math.max(...combatants.map(c => c.damageValue || 0));
 
-  const override = window.overrideStyle ? window.overrideStyle.toLowerCase() : null;
+combatants.forEach(combatant => {
+  let playerName = combatant.name;
+  if (playerName === 'You') {
+    const hit = combatant.maxhit || '';
+    const match = hit.match(/\(as ([^)]+)\)/);
+    if (match) playerName = match[1];
+  }
 
-  combatants.forEach(combatant => {
-    const currentDamage = combatant.damageValue || 0;
-    const widthPercentage = maxDamage > 0 ? (currentDamage / maxDamage) * 100 : 0;
+  const normalizedName = playerName.toLowerCase();
+  const isGuildMember = guildMembers.includes(playerName);
 
-    let playerDiv = document.createElement('div');
-    playerDiv.setAttribute('data-player', combatant.name);
-    playerDiv.classList.add('player');
+  let playerDiv = document.createElement('div');
+  playerDiv.setAttribute('data-player', combatant.name);
+  playerDiv.classList.add('player');
 
-    let dpsBar = document.createElement('div');
-    dpsBar.className = 'dps-bar';
-
-    let gradientBg = document.createElement('div');
-    gradientBg.className = 'gradient-bg';
-
-    const isSelf = combatant.name === 'Ryiki';
-    const combatantKey = isSelf ? override : combatant.name.toLowerCase();
-    const config = customStyles[combatantKey];
-
-    if (config?.style) {
-      gradientBg.classList.add(config.style);
-    } else if (isSelf) {
-      playerDiv.classList.add('you');
-    }
-
-    gradientBg.style.clipPath = `inset(0 ${100 - widthPercentage}% 0 0)`;
-
-    let barContent = document.createElement('div');
-    barContent.className = 'bar-content';
-
-    const name = document.createElement('span');
-    name.className = 'dps-bar-label';
-
-    if (config?.icon) {
-      name.innerHTML = `${combatant.name} <img src="${config.icon}" class="player-icon" />`;
-    } else {
-      name.textContent = combatant.name;
-    }
-
-    const dps = document.createElement('span');
-    dps.className = 'dps-bar-value';
-    dps.textContent = `${nf.format(combatant.dpsValue)}/sec`;
-
-    barContent.appendChild(name);
-    barContent.appendChild(dps);
-    dpsBar.appendChild(gradientBg);
-    dpsBar.appendChild(barContent);
-    playerDiv.appendChild(dpsBar);
+  if (!isGuildMember) {
+    const warning = document.createElement('div');
+    warning.className = 'guild-warning';
+    warning.textContent = '© Only For Guild Members — Csábító Tea Party';
+    playerDiv.style.background = 'linear-gradient(to right, #66ad2d, #407508)';
+    playerDiv.appendChild(warning);
     table.appendChild(playerDiv);
-  });
-}
+    return;
+  }
+
+  const currentDamage = combatant.damageValue || 0;
+  const widthPercentage = maxDamage > 0 ? (currentDamage / maxDamage) * 100 : 0;
+
+  const config = customStyles[normalizedName];
+
+  let dpsBar = document.createElement('div');
+  dpsBar.className = 'dps-bar';
+
+  let gradientBg = document.createElement('div');
+  gradientBg.className = 'gradient-bg';
+  if (config?.style) {
+    gradientBg.classList.add(config.style);
+  } else if (combatant.name === 'You') {
+    playerDiv.classList.add('you');
+  }
+  gradientBg.style.clipPath = `inset(0 ${100 - widthPercentage}% 0 0)`;
+
+  let barContent = document.createElement('div');
+  barContent.className = 'bar-content';
+
+  const name = document.createElement('span');
+  name.className = 'dps-bar-label';
+
+  if (config?.icon) {
+    name.innerHTML = `${playerName} <img src="${config.icon}" class="player-icon" />`;
+  } else {
+    name.textContent = playerName;
+  }
+
+  const dps = document.createElement('span');
+  dps.className = 'dps-bar-value';
+  dps.textContent = `${nf.format(combatant.dpsValue)}/sec`;
+
+  barContent.appendChild(name);
+  barContent.appendChild(dps);
+  dpsBar.appendChild(gradientBg);
+  dpsBar.appendChild(barContent);
+  playerDiv.appendChild(dpsBar);
+  table.appendChild(playerDiv);
+})}
+
+
 
 function setupZoomControls() {
   const zoomOutBtn = document.getElementById('zoom-out');
