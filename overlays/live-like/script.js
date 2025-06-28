@@ -1,23 +1,23 @@
 const nf = new Intl.NumberFormat('en-US');
 
 const customStyles = {
-  "ryiki": {
+  "Ryiki": {
     style: 'ryiki-gradient',
     icon: 'icons/Nerik_logo.png'
   },
-  "kitsunetsuki": {
-    style: 'kitsunetsuki-gradient',
+  "GrimWLock": {
+    style: 'grimwlock-gradient',
     icon: 'icons/Grim_icon.png'
   },
-  "kissy": {
+  "Kissy": {
     style: 'kircsi-gradient',
     icon: 'icons/Kircsi_icon.png'
   },
-  "gábor": {
+  "Gábor": {
     style: 'gabor-gradient',
     //icon: 'icons/Kircsi_icon.png'
   },
-  "tokita kazu": {
+  "Tokita Kazu": {
     style: 'tokita-gradient',
     //icon: 'icons/Kircsi_icon.png'
   },
@@ -157,7 +157,6 @@ function updateDPSMeter(data) {
       const match = hit.match(/\(as ([^)]+)\)/);
       if (match) playerName = match[1];
     }
-    const normalizedName = playerName.toLowerCase();
 
     let playerDiv = document.createElement('div');
     playerDiv.setAttribute('data-player', combatant.name);
@@ -166,7 +165,7 @@ function updateDPSMeter(data) {
     const currentDamage = combatant.damageValue || 0;
     const widthPercentage = maxDamage > 0 ? (currentDamage / maxDamage) * 100 : 0;
 
-    const config = customStyles[normalizedName];
+    const config = customStyles[playerName];
 
     let dpsBar = document.createElement('div');
     dpsBar.className = 'dps-bar';
