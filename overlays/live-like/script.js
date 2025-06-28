@@ -105,59 +105,37 @@ function styleClassExists(className) {
   });
 }
 
+
 function updateDPSMeter(data) {
   document.getElementById('boss-name').innerText = data.Encounter.title || 'No Data';
   let table = document.getElementById('combatantTable');
   table.innerHTML = '';
 
   let combatants = Object.values(data.Combatant);
+  let playerName;
 
-  combatants.forEach(combatant => {
+  for (const combatant of combatants) {
+    if (combatant.name === 'You') {
+      let hit = combatant.maxhit || '';
+      let match = hit.match(/\(as ([^)]+)\)/);
+      if (match) {
+        playerName = match[1];
+        if (!guildMembers.includes(playerName)) {
+          showPermissionDeny(table);
+          return;
+        }
+      }
+    }
+
     combatant.damageValue = parseAnyNumberFormat(combatant.damage);
     combatant.dpsValue = parseAnyNumberFormat(combatant.DPS || combatant.encdps || 0);
     combatant.damagePercent = parseAnyNumberFormat(String(combatant['damage%'] || '').replace('%', ''));
-  });
+  }
 
   combatants.sort((a, b) => b.damageValue - a.damageValue);
   const maxDamage = Math.max(...combatants.map(c => c.damageValue || 0));
-  let isUseAllowed = true;
-
 
   combatants.forEach(combatant => {
-    let playerName = combatant.name;
-    if (playerName === 'You') {
-      const hit = combatant.maxhit || '';
-      const match = hit.match(/\(as ([^)]+)\)/);
-      if (match) playerName = match[1];
-    }
-
-    const isGuildMember = guildMembers.includes(playerName);
-    if (!isGuildMember && combatant.name === 'You') {
-      isUseAllowed = false;
-    }
-  })
-
-
-  if (!isUseAllowed) {
-    let playerDiv = document.createElement('div');
-    const warning = document.createElement('div');
-    warning.className = 'guild-warning';
-    warning.textContent = '© Only For Guild Members — Csábító Tea Party';
-    playerDiv.style.background = 'linear-gradient(to right, #66ad2d, #407508)';
-    playerDiv.appendChild(warning);
-    table.appendChild(playerDiv);
-    return;
-  }
-
-
-  combatants.forEach(combatant => {
-    let playerName = combatant.name;
-        if (playerName === 'You') {
-      const hit = combatant.maxhit || '';
-      const match = hit.match(/\(as ([^)]+)\)/);
-      if (match) playerName = match[1];
-    }
-
     let playerDiv = document.createElement('div');
     playerDiv.setAttribute('data-player', combatant.name);
     playerDiv.classList.add('player');
@@ -165,8 +143,7 @@ function updateDPSMeter(data) {
     const currentDamage = combatant.damageValue || 0;
     const widthPercentage = maxDamage > 0 ? (currentDamage / maxDamage) * 100 : 0;
 
-    const config = customStyles[playerName];
-
+    let config = customStyles[combatant.name === 'You' ? playerName : combatant.name];
     let dpsBar = document.createElement('div');
     dpsBar.className = 'dps-bar';
 
@@ -204,8 +181,15 @@ function updateDPSMeter(data) {
   })
 }
 
-
-
+function showPermissionDeny(table) {
+  let playerDiv = document.createElement('div');
+  const warning = document.createElement('div');
+  warning.className = 'guild-warning';
+  warning.textContent = '© Only For Guild Members — Csábító Tea Party';
+  playerDiv.style.background = 'linear-gradient(to right, #66ad2d, #407508)';
+  playerDiv.appendChild(warning);
+  table.appendChild(playerDiv);
+}
 
 function setupZoomControls() {
   const zoomOutBtn = document.getElementById('zoom-out');
