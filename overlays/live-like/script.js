@@ -25,8 +25,8 @@ const customStyles = {
 };
 
 const guildMembers = [
-  "NiNl", "Kissy", "Ryiki", "Tokita Kazu", "Leyaress", "Kitsunetsuki", "obzoR", "Lootoneesan", "Sanwo",
-  "Gábor", "Imfa", "Tokita Kei", "Lupi", "Domboss", "Entaa", "Rlyreen", "HalibeLL", "LupiDojin", "GrimWLock"
+  "NiNl", "Kissy", "Ryiki", "Tokita Kazu", "Leyaress", "Kitsunetsuki", "obzoR", "Lootoneesan",
+  "Gábor", "Imfa", "Tokita Kei", "Lupi", "Entaa", "Rlyreen", "GrimWLock"
 ];
 
 
@@ -185,7 +185,7 @@ function showPermissionDeny(table) {
   let playerDiv = document.createElement('div');
   const warning = document.createElement('div');
   warning.className = 'guild-warning';
-  warning.textContent = '© Only For Guild Members — Csábító Tea Party';
+  warning.textContent = '© Only For Guild Members — Debauchery Tea Party';
   playerDiv.style.background = 'linear-gradient(to right, #66ad2d, #407508)';
   playerDiv.appendChild(warning);
   table.appendChild(playerDiv);
